@@ -1,4 +1,4 @@
-class Pygene:
+class genepy:
     def __init__(self, length: int, check_conflicts=False: bool):
         if length < 1:
             raise Exception('invalid length')
@@ -6,7 +6,7 @@ class Pygene:
             self.length = length
 
         self.check_conflicts = check_conflicts
-        
+
         self.rules = {
             'morethan': {},
             'contains': {},
@@ -33,7 +33,7 @@ class Pygene:
         }
 
         self.sequences = []
-        
+
     def change_length(arg: int):
         if arg < 1:
             raise Exception('invalid length')
