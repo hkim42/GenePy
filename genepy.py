@@ -1,5 +1,5 @@
 class genepy:
-    def __init__(self, length: int, check_conflicts=False: bool):
+    def __init__(self, length: int, check_conflicts=False):
         if length < 1:
             raise Exception('invalid length')
         else:
@@ -59,25 +59,28 @@ class genepy:
         self.rules['contains'][a] = True
 
     def exactly(self, a: str, n: int):
-        pass
+        if n > N:
+            raise Exception('invalid n: n must be less than or equal to N')
+        else:
+            self.rules['exactly'][a] = n
 
-    def then(self):
-        pass
+    def then(self, a: str, B: str):
+        self.rules['then'][a] = B
 
-    def with(self):
-        pass
+    #def with(self, a: str, B: str):
+    #    self.rules['with'][a] = B
 
-    def startswith(self):
-        pass
+    def startswith(self, a: str):
+        self.rules['startswith'][a] = True
 
-    def endswith(self):
-        pass
+    def endswith(self, a: str):
+        self.rules['endswith'][a] = True
 
-    def all_after(self):
-        pass
+    def all_after(self, a: str, B: list):
+        self.rules['all_after'][a] = B
 
-    def some_after(self):
-        pass
+    def some_after(self, a: str, B: list):
+        self.rules['some_after'][a] = B
 
     def all_before(self):
         pass
