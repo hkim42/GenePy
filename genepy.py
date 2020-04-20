@@ -121,17 +121,22 @@ class genepy:
     def drives(self):
         pass
 
-    def show_all(self):
-        pass
-
-    def delete_rule(self):
-        pass
-
-    def delete_all(self):
-        pass
-
+    # generate a certain number of sequences
     def generate(self):
         pass
 
+    # generate all possible sequences
+    # may take a while
     def generate_all(self):
+        pass
+
+    # add rules post-processing
+    # these rules are stored separately and applied to already generated sequences (when regenerate is called)
+    def add_rules(self):
+        pass
+
+    # regenerate sequences post-processing
+    # add_rules should come before this to make a difference
+    # uses rules added by add_rules to filter the existing sequences
+    def regenerate(self):
         pass
