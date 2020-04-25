@@ -82,44 +82,44 @@ class genepy:
     def some_after(self, a: str, B: list):
         self.rules['some_after'][a] = B
 
-    def all_before(self):
-        pass
+    def all_before(self, a: str, B: list):
+        self.rules['all_before'][a] = B
 
-    def some_before(self):
-        pass
+    def some_before(self, a: str, B: list):
+        self.rules['some_before'][a] = B
 
-    def all_nextto(self):
-        pass
+    def all_nextto(self, a: str, B: list):
+        self.rules['all_nextto'][a] = B
 
-    def some_nextto(self):
-        pass
+    def some_nextto(self, a: str, B: list):
+        self.rules['some_nextto'][a] = B
 
-    def all_forward_if(self):
-        pass
+    def all_forward_if(self, a: str):
+        self.rules['all_forward_if'][a] = True
 
-    def all_reverse_if(self):
-        pass
+    def all_reverse_if(self, a: str):
+        self.rules['all_reverse_if'][a] = True
 
-    def some_forward(self):
-        pass
+    def some_forward(self, a: str):
+        self.rules['some_forward'][a] = True
 
-    def some_reverse(self):
-        pass
+    def some_reverse(self, a: str):
+        self.rules['some_reverse'][a] = True
 
     def all_forward(self):
-        pass
+        self.rules['all_forward'] = True
 
     def all_reverse(self):
-        pass
+        self.rules['all_reverse'] = True
 
-    def represses(self):
-        pass
+    def represses(self, g: str, p: str):
+        self.rules['represses'][g] = p
 
-    def induces(self):
-        pass
+    #def induces(self, in: str, p: str):
+    #    self.rules['induces'][in] = p
 
-    def drives(self):
-        pass
+    def drives(self, g: str, p: str):
+        self.rules['drives'][g] = p
 
     # generate a certain number of sequences
     def generate(self):
