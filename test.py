@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 
 from genepy import genepy
-from z3 import *
 
 if __name__ == '__main__':
-    x = Int('x')
-    y = Int('y')
-    solve(x > 2, y < 10, x + 2*y == 7)
-    #gp = genepy(5)
-    #gp.some_after("p1",["h1","h2","h3"])
-    #print(gp.rules)
+    gp = genepy(5)
+    gp.contains("p1")
+    gp.morethan("p3", 1)
+    gp.exactly("p5", 1)
+
+    gp.some_before("p3", "p1")
+    gp.endswith("p5")
+
+    gp.induces("p1", "p3")
+    print(gp.rules["induces"])
+    outputs = gp.generate(2)
+
+    for x in outputs:
+        print(x)
