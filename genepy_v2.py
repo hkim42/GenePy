@@ -1,3 +1,5 @@
+from constraint import *
+
 class genepy:
     def __init__(self, length:int):
         if length < 1:
@@ -29,6 +31,8 @@ class genepy:
             'drives': {}
         }
         self.sequences = []
+
+        self.problem = Problem()
 
     def get_length(self):
         return self.length
@@ -209,6 +213,8 @@ class genepy:
 
     # generate a certain number of sequences
     def generate(self):
+        problem = Problem()
+        problem.addVariables()
         pass
 
     # generate all possible sequences
