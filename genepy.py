@@ -1,5 +1,6 @@
 from constraint import *
-from EugeneConstraints import *
+import json
+import os
 
 class genepy:
     def __init__(self, length: int, check_conflicts=False):
@@ -9,7 +10,6 @@ class genepy:
             self.length = length
 
         self.check_conflicts = check_conflicts
-
         self.rules = {
             'morethan': {},
             'contains': {},
@@ -34,11 +34,8 @@ class genepy:
             'induces': {},
             'drives': {}
         }
-
-        self.sequences = []
-
         self.problem = Problem()
-        self.constraints = EugeneConstraints()
+        self.solutions = None
 
         self.containsParts = None
         self.morethanParts = None
@@ -49,99 +46,119 @@ class genepy:
         self.thenPartsB = None
 
     def change_length(arg: int):
+        """Change sequence length after initilization. Must be called BEFORE generating solutions."""
         if arg < 1:
             raise Exception('invalid length')
         else:
             self.length = arg
 
-    def toggle_check_conflicts(arg=None):
-        if arg == None:
-            self.check_conflicts = not self.check_conflicts
-        else:
-            if type(arg) != bool:
-                raise Exception('invalid type')
-            else:
-                self.check_conflicts = arg
-
+    # User methods to implement Eugene rules
     # Counting Rules
     def morethan(self, a: str, n: int):
+        """a MORETHAN n --> morethan(a, n)"""
         if n > self.length or n < 1:
             raise Exception('invalid n')
         else:
             self.rules['morethan'][a] = n
 
     def contains(self, a: str):
+        """CONTAINS a --> contains(a)"""
         self.rules['contains'][a] = True
 
     def exactly(self, a: str, n: int):
+        """a EXACTLY n --> exactly(a, n) """
         if n > self.length:
             raise Exception('invalid n: n must be less than or equal to N')
         else:
             self.rules['exactly'][a] = n
 
     def then(self, a: str, B: str):
+        """a THEN B --> then(a, B)"""
         self.rules['then'][a] = B
 
     def witH(self, a: str, B: str):
+        """a WITH B ---> witH(a, B)"""
         self.rules['witH'][a] = B
 
     # Positioning Rules
     def startswith(self, a: str):
+        """STARTSWITH a --> startswith(a) """
         self.rules['startswith'][a] = True
 
     def endswith(self, a: str):
+        """ENDSWITH a --> endswith(a)"""
         self.rules['endswith'][a] = True
 
     def all_after(self, a: str, B: list):
+        """a ALL_AFTER B / a AFTER B --> all_after(a, B)"""
         self.rules['all_after'][a] = B
 
     def some_after(self, a: str, B: list):
+        """a SOME_AFTER B --> some_after(a, B)"""
         self.rules['some_after'][a] = B
 
     def all_before(self, a: str, B: list):
+        """a ALL_BEFORE B --> all_before(a, B)"""
         self.rules['all_before'][a] = B
 
     def some_before(self, a: str, B: list):
+        """a SOME_BEFORE B --> some_before(a, B)"""
         self.rules['some_before'][a] = B
 
     def all_nextto(self, a: str, B: list):
+        """a ALL_NEXTTO B --> all_nextto(a, B)"""
         self.rules['all_nextto'][a] = B
 
     def some_nextto(self, a: str, B: list):
+        """a SOME_NEXTTO B --> some_nextto(a, B)"""
         self.rules['some_nextto'][a] = B
 
     # Orientation Rules
     def all_forward_if(self, a: str):
+        """ALL_FORWARD a --> all_forward(a)"""
         self.rules['all_forward_if'][a] = True
 
     def all_reverse_if(self, a: str):
+        """ALL_REVERSE a --> all_reverse_if(a)"""
         self.rules['all_reverse_if'][a] = True
 
     def some_forward(self, a: str):
+        """SOME_FORWARD a --> some_forward(a)"""
         self.rules['some_forward'][a] = True
 
     def some_reverse(self, a: str):
+        """SOME_REVERSE a --> some_reverse(a)"""
         self.rules['some_reverse'][a] = True
 
     def all_forward(self):
+        """ALL_FORWARD --> all_forward()"""
         self.rules['all_forward'] = True
 
     def all_reverse(self):
+        """ALL_REVERSE --> all_reverse()"""
         self.rules['all_reverse'] = True
 
     # Interaction Rules
-    def represses(self, g: str, p: str):
-        self.rules['represses'][g] = p
+    def represses(self, a: str, B: str):
+        """g REPRESSES p --> represses(g, p)"""
+        self.rules['represses'][a] = B
 
-    def induces(self, i: str, p: str):
-        self.rules['induces'][i] = p
+    def induces(self, a: str, B: str):
+        """a INDUCES B --> induces(a, B)"""
+        self.rules['induces'][a] = B
 
-    def drives(self, g: str, p: str):
-        self.rules['drives'][g] = p
+    def drives(self, a: str, B: str):
+        """a DRIVES B --> drives(a, B)"""
+        self.rules['drives'][a] = B
 
-    # Constraint Methods
-    def containsConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+
+    # Constraint methods for python-constraint solver
+    # Not inteded for user
+    def containsConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'contains()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         parts = self.containsParts
         count = 0
         for x in range(len(parts)):
@@ -152,8 +169,11 @@ class genepy:
         else:
             return False
 
-    def morethanConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def morethanConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'morethan()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         parts = self.morethanParts
         n = self.morethanValues
         count = 0
@@ -165,8 +185,11 @@ class genepy:
         else:
             return False
 
-    def exactlyConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def exactlyConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'exactly()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         parts = self.exactlyParts
         n = self.exactlyValues
         count = 0
@@ -178,8 +201,11 @@ class genepy:
         else:
             return False
 
-    def thenConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def thenConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'then()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = self.thenPartsA
         partsB = self.thenPartsB
         count = 0
@@ -192,8 +218,11 @@ class genepy:
         else:
             return False
 
-    def withConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def withConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'witH()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = self.witHPartsA
         partsB = self.witHPartsB
         count = 0
@@ -206,8 +235,11 @@ class genepy:
         else:
             return False
 
-    def startswithConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def startswithConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'startswith()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         ruleList = list(self.rules["startswith"].keys())
         if len(ruleList) > 1:
             print("startswith used on multiple parts")
@@ -218,8 +250,11 @@ class genepy:
             else:
                 return False
 
-    def endswithConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def endswithConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'endswith()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         ruleList = list(self.rules["endswith"].keys())
         if len(ruleList) > 1:
             print("endswith used on multiple parts")
@@ -230,8 +265,11 @@ class genepy:
             else:
                 return False
 
-    def all_afterConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def all_afterConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'all_after()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = list(self.rules["all_after"].keys())
         partsB = list(self.rules["all_after"].values())
         firstA = None
@@ -255,8 +293,11 @@ class genepy:
         else:
             return False
 
-    def some_afterConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def some_afterConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'some_after()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = list(self.rules["some_after"].keys())
         partsB = list(self.rules["some_after"].values())
         foundA = []
@@ -272,8 +313,11 @@ class genepy:
                     return True
         return False
 
-    def all_beforeConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def all_beforeConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'all_before()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = list(self.rules["all_before"].keys())
         partsB = list(self.rules["all_before"].values())
         firstB = None
@@ -297,8 +341,11 @@ class genepy:
         else:
             return False
 
-    def some_beforeConstraint(self, first, second, third, fourth, fifth):
-        variables = [first, second, third, fourth, fifth]
+    def some_beforeConstraint(self, *argv):
+        """Returns True if potential sequence satifies all 'some_before()' constraints desribed by user."""
+        variables = []
+        for arg in argv:
+            variables.append(arg)
         partsA = list(self.rules["some_before"].keys())
         partsB = list(self.rules["some_before"].values())
         foundA = []
@@ -314,9 +361,9 @@ class genepy:
                     return True
         return False
 
-    # generate a certain number of sequences
     def generate(self, number=0):
-        # make domain for each variable
+        """Return all sequences that satifies user described constraints. If not given a number for sequences method returns all solutions."""
+        # Create domain for each position in sequence using Counting rules
         self.containsParts = list(self.rules["contains"].keys())
         self.morethanParts = list(self.rules["morethan"].keys())
         self.morethanValues = list(self.rules["morethan"].values())
@@ -329,8 +376,7 @@ class genepy:
         domain = self.morethanParts + self.containsParts + self.exactlyParts + self.thenPartsA + self.thenPartsB + self.witHPartsA + self.witHPartsB
         self.problem.addVariables(range(self.length), domain)
 
-        # Apply contains rules
-        # contains, morethan, exactly, then, startswith, endswith,
+        # If certain rule was implemented by user, then apply to solver
         if self.rules["contains"]:
             self.problem.addConstraint(self.containsConstraint, list(range(self.length)))
         if self.rules["morethan"]:
@@ -354,9 +400,35 @@ class genepy:
         if self.rules["some_before"]:
             self.problem.addConstraint(self.some_beforeConstraint, list(range(self.length)))
 
-        #Get solutions
-        solutions = self.problem.getSolutions()
+        # Return solutions
+        self.solutions = self.problem.getSolutions()
         if number == 0:
-            return solutions
+            return self.solutions
         else:
-            return solutions[0:number]
+            return self.solutions[0:number]
+
+    def solutionsToFile(self, filename, number=0):
+        """Write generated solutions to json file. If not given a number all solutions are written to the file"""
+        fileCheck = os.path.splitext(filename)
+        if fileCheck[1] != ".json":
+            raise Exception("Filename must be of type json")
+        path = "./Solutions/" + filename
+
+        f = open(path, "w")
+        if number == 0:
+            json.dump(self.solutions, f)
+            f.close()
+        else:
+            json.dump(self.solutions[0:number], f)
+            f.close()
+
+    def rulesToFile(self, filename):
+        """Write rules to json file."""
+        fileCheck = os.path.splitext(filename)
+        if fileCheck[1] != ".json":
+            raise Exception("Filename must be of type json")
+        path = "./Rules/" + filename
+
+        f = open(path, "w")
+        json.dump(self.rules, f)
+        f.close()

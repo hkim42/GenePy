@@ -3,17 +3,29 @@
 from genepy import genepy
 
 if __name__ == '__main__':
-    gp = genepy(5)
-    gp.contains("p1")
-    gp.morethan("p3", 1)
-    gp.exactly("p5", 1)
+    # initiate class
+    gp = genepy(10)
 
-    gp.some_before("p3", "p1")
+    # add user defined rules with rule methods
+    gp.contains("p1")
+    gp.contains("p2")
+    gp.contains("p3")
+    gp.exactly("p4", 2)
+    gp.morethan("p5", 1)
+
+    gp.some_before("p2", "p3")
     gp.endswith("p5")
+    gp.startswith("p1")
 
     gp.induces("p1", "p3")
+    gp.drives("p3", "p2")
+
+    # print out generated solutions that satisfy rules
     print(gp.rules["induces"])
-    outputs = gp.generate(2)
+    outputs = gp.generate(5)
 
     for x in outputs:
         print(x)
+
+    gp.solutionsToFile("test_solutions.json")
+    gp.rulesToFile("test_rules.json")
