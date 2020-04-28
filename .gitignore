@@ -1,5 +1,5 @@
 # Environment variables
-.pyc
+*.pyc
 
 # Solutions
-.json
+*.json

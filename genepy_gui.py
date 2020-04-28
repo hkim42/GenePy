@@ -3,6 +3,8 @@ from genepy import genepy
 
 class genepy_gui:
     def __init__(self):
+        # declare static parameters here
+        # needed to make comparisons later
         self.window3_open = False
         self.rules0 = ['ALL_FORWARD', 'ALL_REVERSE']
         self.rules1 = ['CONTAINS', 'STARTSWITH', 'ENDSWITH', 'ALL_FORWARD_IF', 'ALL_REVERSE_IF', 'SOME_FORWARD',
@@ -11,25 +13,31 @@ class genepy_gui:
                        'SOME_BEFORE', 'ALL_NEXTTO', 'SOME_NEXTTO', 'REPRESSES', 'INDUCES', 'DRIVES']
         self.mygp = genepy(1)
 
+        # this is the main window
         self.window = tk.Tk()
 
+        # define a space for entering the sequence length
         self.ent_N = tk.Entry()
         self.ent_N.insert(0, 'Enter Seq. Length')
         self.ent_N.grid(row=0, column=0)
 
+        # define a button for opening the console window
         self.btn_console = tk.Button(text='Launch Console', width=16, height=2)
         self.btn_console.grid(row=0, column=1)
         self.btn_console.bind('<Button-1>', (lambda event: self.handle_btn_console()))
 
+        # define a space for entering the desired number of solutions
         self.ent_sol = tk.Entry()
         self.ent_sol.insert(0, 'Enter No. Solutions')
         self.ent_sol.grid(row=0, column=2)
 
+        # define a button for running the solver with given rules and constraints
         self.btn_run = tk.Button(text='Run Solver', width=16, height=2)
         self.btn_run.grid(row=0, column=4)
         self.btn_run.bind('<Button-1>', (lambda event: self.handle_btn_run()))
 
         ## Grid for Rules ##########################################################
+        ## Below add buttons for each rules in a grid
         row_start = 1
         column_start = 0
 
@@ -97,22 +105,26 @@ class genepy_gui:
         row_rule = row_rule+1
         self.rule_add_btn(self.window, row_rule, column_rule, 'DRIVES')
         row_rule = row_rule+1
+        ## Grid for Rules ##########################################################
 
         self.window.mainloop()
 
+    # do this when the open-console-window button is clicked
     def handle_btn_console(self):
         self.window3_open = True
         self.window3_text_location = 20
         self.window3 = tk.Tk()
 
+        # draw canvas
+        # this is where rules and results are posted
         _frm = tk.Frame(master=self.window3, width=300, height=300)
         _frm.pack(expand=True)
         self._canvas = tk.Canvas(master=_frm, width=300, height=300, scrollregion=(0,0,500,500), background='white')
 
+        # scrollbars just in case
         hbar = tk.Scrollbar(_frm, orient='horizontal')
         hbar.pack(side='bottom', fill='x')
         hbar.config(command=self._canvas.xview)
-
         vbar = tk.Scrollbar(_frm, orient='vertical')
         vbar.pack(side='right', fill='y')
         vbar.config(command=self._canvas.yview)
@@ -194,14 +206,19 @@ class genepy_gui:
         window2 = tk.Tk()
         window2.geometry('250x100')
 
+        # first parameter for the rule if applicable
         self._ent0 = tk.Entry(master=window2)
         self._ent0.insert(0, 'Enter Part Name')
 
+        # repeat the rule name for visibility
         _lbl = tk.Label(master=window2, text=txt)
 
+        # second parameter for the rule if applicable
         self._ent1 = tk.Entry(master=window2)
         self._ent1.insert(0, 'Enter Part Name')
 
+        # determine the order to display the parameters
+        # depends on the rule
         if txt in self.rules0:
             _lbl.pack()
         elif txt in self.rules1:
@@ -214,16 +231,19 @@ class genepy_gui:
         else:
             raise Exception('error2')
 
+        # this button has to be clicked to add the rule internally and on the canvas
         btn_add_rule = tk.Button(master=window2, text='Add Rule')
         btn_add_rule.bind('<Button-1>', (lambda event: self.handle_btn_add(window2, txt)))
         btn_add_rule.pack()
 
         window2.mainloop()
 
+    # this happens when the run-solver button is clicked
     def handle_btn_run(self):
         self.mygp.change_length(int(self.ent_N.get()))
         outputs = self.mygp.generate(int(self.ent_sol.get()))
 
+        # prints the resulting sequences on the canvas
         buf = ''
         for sequence in outputs:
             for ii in range(0, len(sequence)):
@@ -237,12 +257,15 @@ class genepy_gui:
         for x in outputs:
             print(x)
 
+    # helper function for adding labels on the main menu
     def rule_add_lbl(self, win, _row, _col, txt):
         frm_rule = tk.Frame(master=win, borderwidth=1)
         frm_rule.grid(row=_row, column=_col)
         _lbl = tk.Label(master=frm_rule, text=txt)
         _lbl.pack()
 
+    # helper function for adding buttons on the main menu
+    # only used for rule-adding buttons
     def rule_add_btn(self, win, _row, _col, txt):
         frm_rule = tk.Frame(master=win, borderwidth=1)
         frm_rule.grid(row=_row, column=_col)
