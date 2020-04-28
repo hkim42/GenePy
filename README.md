@@ -13,9 +13,9 @@ Genepy GUI requires Tkinter toolkit. There no one definitive way of installing T
 ### Installing
 
 Clone this repo or download the files. For example:
-`
+```
 git clone https://github.com/hkim42/GenePy.git
-`
+```
 will clone the repo.
 
 ## Running the tests
@@ -41,5 +41,7 @@ There are spaces for defining the number of parts to be used and the number of s
 ## Acknowledgements
 
 Massive shoutout to Dr. Ernst Oberotner and Dr. Densmore
+
 Slightly smaller shoutout to Krishna
+
 No thanks Corona
