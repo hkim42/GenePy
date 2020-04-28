@@ -24,7 +24,7 @@ will clone the repo.
 
 ### GenePy GUI
 
-Run the test_gui.py to start off the GUI. Only single line of code is required to start as evident in the script.
+Run the test_gui.py to start off the GUI.
 
 The main window will pop up with various widgets for user inputs.
 
@@ -35,6 +35,16 @@ Clicking the buttons for adding rules will open another window where the user ca
 Lastly, running the solver will display all possible DNA sequences on the console window. If there are no possible sequences nothing will be added on the console window.
 
 There are spaces for defining the number of parts to be used and the number of solutions the user desires. When the button for running the solver is pressed, these values will be passed into the code backend.
+
+## Deployment
+### GenePy code
+
+### GenePy GUI
+
+A single line of code is enough to launches the GUI.
+```
+myGUI = genepy_gui()
+```
 
 ## Authors
 
