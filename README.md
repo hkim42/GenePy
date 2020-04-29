@@ -5,7 +5,7 @@ GenePy is a Python port of miniEugene, a specification tool for exploring geneti
 ## Installing
 
 Clone this repo or download the files. For example:
-```
+```bash
 git clone https://github.com/hkim42/GenePy.git
 ```
 will clone the repo.
@@ -13,12 +13,16 @@ will clone the repo.
 ## Setup
 If not already setup, please install the latest version of Python3.
 
+### Windows
+A Windows Installer is available here [link](https://www.python.org/downloads/)
+
+### macOS
 ```bash
 $ brew install python3
 ```
 
-GenePy only requires download following  packages
-* `python-constraint`  
+GenePy requires following packages:
+* `python-constraint`
 * `tkinter`
 
 `tkinter` is often already installed on many Python running machines but visit this [link](https://docs.python.org/3/library/tkinter.html) for more information regarding installing and setting up `tkinter`
@@ -26,12 +30,12 @@ GenePy only requires download following  packages
 `python-constraint` can be installed using `pip3`.
 
 ```bash
-$ pip install python-constraint
+$ pip3 install python-constraint
 ```
 
 ## Usage
 
-GenePy can used by importing the class in and declaring rules in a Python script or through a simple `tkinter` based GUI. The following describes how users can interact with both modes.
+GenePy can used by importing the class and declaring rules in a Python script or the `tkinter` based GUI. The following describes how users can interact with both modes.
 
 ## GenePy Class
 ### Counting Rules
@@ -118,14 +122,14 @@ if __name__ == '__main__':
 
 ### GUI Directions
 
-1. Run the `test_gui.py` to start the GUI.
+1. Run the `test_gui.py` script to start the GUI.
 
-1. The main window will pop up with various widgets for user inputs.
+2. The main window will pop up with various widgets for user inputs.
   * It is recommended to open the console window first because it displays all the rules that are defined by the user along with the output DNA sequences.
 
-1. Clicking the buttons for adding rules will open another window where the user can enter the parameters pertaining to the rule. There is a button for each of the rules.
+3. Clicking the buttons for adding rules will open another window where the user can enter the parameters pertaining to the rule. There is a button for each of the rules.
 
-1. Lastly, running the solver will display all possible DNA sequences on the console window. If there are no possible sequences nothing will be added on the console window.
+4. Lastly, running the solver will display all possible DNA sequences on the console window. If there are no possible sequences nothing will be added on the console window.
 
   * There are spaces for defining the number of parts to be used and the number of solutions the user desires. When the button for running the solver is pressed, these values will be passed into the code backend.
 
@@ -137,10 +141,7 @@ from genepy_gui import genepy_gui
 
 if __name__ == '__main__':
     foo = genepy_gui()
-
 ```
-
-## Authors
 
 ## Acknowledgements
 
