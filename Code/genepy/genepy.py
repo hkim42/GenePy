@@ -401,10 +401,17 @@ class genepy:
             self.problem.addConstraint(self.some_beforeConstraint, list(range(self.length)))
 
         # Return solutions
-        self.solutions = self.problem.getSolutions()
         if number == 0:
+            self.solutions = self.problem.getSolution()
+            return self.solutions
+        elif number == 1:
+            solver = MinConflictsSolver()
+            self.problem.setSolver(solver)
+            while self.solutions == None:
+                self.solutions = self.problem.getSolution()
             return self.solutions
         else:
+            self.solutions = self.problem.getSolutions()
             return self.solutions[0:number]
 
     def solutionsToFile(self, filename, number=0):
