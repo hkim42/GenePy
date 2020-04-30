@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # print out generated solutions that satisfy rules
     print(gp.rules["induces"])
-    outputs = gp.generate(1)
+    outputs = gp.generate()
 
     print(outputs)
 

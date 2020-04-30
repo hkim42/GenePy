@@ -401,19 +401,20 @@ class genepy:
             self.problem.addConstraint(self.some_beforeConstraint, list(range(self.length)))
 
         # Return solutions
-        if number == 0:
-            self.solutions = self.problem.getSolution()
-            return self.solutions
-        elif number == 1:
+        # Generate one solution if left as default or user enters 1
+        if number == 0 or number == 1:
+            # Use MinConflictsSolver to quickly generate single solution
             solver = MinConflictsSolver()
             self.problem.setSolver(solver)
             while self.solutions == None:
                 self.solutions = self.problem.getSolution()
             return self.solutions
+        # Generate user defined number of solutions using default backtracking solver
         else:
             self.solutions = self.problem.getSolutions()
             return self.solutions[0:number]
 
+    # Write generated solutions to JSON file, stored in Solutions directory
     def solutionsToFile(self, filename, number=0):
         """Write generated solutions to json file. If not given a number all solutions are written to the file"""
         fileCheck = os.path.splitext(filename)
@@ -429,6 +430,7 @@ class genepy:
             json.dump(self.solutions[0:number], f)
             f.close()
 
+    # Write declared rules to JSON file, stored in Rules directory
     def rulesToFile(self, filename):
         """Write rules to json file."""
         fileCheck = os.path.splitext(filename)
