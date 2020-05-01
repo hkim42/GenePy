@@ -401,8 +401,11 @@ class genepy:
             self.problem.addConstraint(self.some_beforeConstraint, list(range(self.length)))
 
         # Return solutions
-        # Generate one solution if left as default or user enters 1
-        if number == 0 or number == 1:
+        if number == 0:
+            self.solutions = self.problem.getSolutions()
+            return self.solutions
+        # Generate one solution
+        if number == 1:
             # Use MinConflictsSolver to quickly generate single solution
             solver = MinConflictsSolver()
             self.problem.setSolver(solver)
