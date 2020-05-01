@@ -11,7 +11,7 @@ class genepy_gui:
                        'SOME_REVERSE']
         self.rules2 = ['MORETHAN', 'EXACTLY', 'THEN', 'WITH', 'ALL_AFTER', 'SOME_AFTER', 'ALL_BEFORE',
                        'SOME_BEFORE', 'ALL_NEXTTO', 'SOME_NEXTTO', 'REPRESSES', 'INDUCES', 'DRIVES']
-        self.mygp = genepy(1)
+        self.mygp = genepy(99)
 
         # this is the main window
         self.window = tk.Tk()

@@ -45,7 +45,7 @@ class genepy:
         self.thenPartsA = None
         self.thenPartsB = None
 
-    def change_length(arg: int):
+    def change_length(self, arg: int):
         """Change sequence length after initilization. Must be called BEFORE generating solutions."""
         if arg < 1:
             raise Exception('invalid length')
